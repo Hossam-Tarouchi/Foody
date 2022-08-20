@@ -1,14 +1,13 @@
-package com.example.foodrecipes2.presentation.screens.home_screen.widgets.category_list
+package com.example.foodrecipes2.presentation.screens.list_recipies_screen
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.foodrecipes2.core.util.Resource
-import com.example.foodrecipes2.domain.use_case.GetCategoriesUC
+import com.example.foodrecipes2.domain.use_case.GetRandomFoodRecipiesUC
+import com.example.foodrecipes2.domain.use_case.GetRecipiesByCategoryUC
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -17,37 +16,39 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CategoryListViewModel @Inject constructor(
-    private val getCategoryUC: GetCategoriesUC
+class RecipiesByCategoryViewModel @Inject constructor(
+    private val getRecipiesByCategoryUC: GetRecipiesByCategoryUC
 ): ViewModel() {
-    private val _state = mutableStateOf(CategoryState())
-    val state: State<CategoryState> = _state
 
-    private val _eventFlow = MutableSharedFlow<CategoryViewEvent>()
+    private val _state = mutableStateOf(RecipiesByCategoryState())
+    var state : State<RecipiesByCategoryState> = _state
+
+    private val _eventFlow = MutableSharedFlow<RecipiesByCategoryViewEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    init {
+    fun getRecipiesByCategory(category:String) {
         viewModelScope.launch {
-            getCategoryUC().onEach { result ->
+            getRecipiesByCategoryUC(category).onEach { result ->
                 when(result){
                     is Resource.Success -> {
                         _state.value = state.value.copy(
-                            categoryItems = result.data ?: emptyList(),
+                            recipiesItems = result.data ?: emptyList(),
                             isLoading = false
                         )
                     }
                     is Resource.Loading -> {
                         _state.value = state.value.copy(
-                            categoryItems = result.data ?: emptyList(),
+                            recipiesItems = result.data ?: emptyList(),
                             isLoading = true
                         )
+                        //delay(4000)
                     }
                     is Resource.Error -> {
                         _state.value = state.value.copy(
-                            categoryItems = result.data ?: emptyList(),
+                            recipiesItems = result.data ?: emptyList(),
                             isLoading = false
                         )
-                        _eventFlow.emit(CategoryViewEvent())
+                        _eventFlow.emit(RecipiesByCategoryViewEvent())
                     }
                 }
             }.launchIn(this)

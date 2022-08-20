@@ -2,6 +2,7 @@ package com.example.foodrecipes2.presentation.screens.home_screen.widgets.catego
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -22,15 +23,17 @@ import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import coil.request.ImageRequest
+import com.example.foodrecipes2.core.util.Screen
 import com.example.foodrecipes2.domain.model.Category
 import com.example.foodrecipes2.ui.theme.MainBlack
 import com.example.foodrecipes2.ui.theme.MainWhite
 
 @Composable
-fun CategoryList(){
+fun CategoryList(navController: NavController) {
 
     val viewModel: CategoryListViewModel = hiltViewModel()
     val state = viewModel.state.value
@@ -44,7 +47,9 @@ fun CategoryList(){
         } else {
             LazyRow(modifier = Modifier) {
                 items(state.categoryItems) { item ->
-                    CategoryItem(item = item)
+                    CategoryItem(item = item) {
+                       navController.navigate(Screen.ListOfRecipies.withArgs(item.strCategory))
+                    }
                 }
             }
         }
@@ -53,11 +58,12 @@ fun CategoryList(){
 }
 
 @Composable
-fun CategoryItem(item: Category){
-    Box(modifier = Modifier.padding(0.dp, 0.dp)) {
+fun CategoryItem(item: Category, onClick: ()->Unit){
+    Box(modifier = Modifier.padding(0.dp, 30.dp, 0.dp, 0.dp).clickable { onClick() }) {
         Box(modifier = Modifier
+            .padding(0.dp, 30.dp, 0.dp, 0.dp)
             .size(70.dp)
-            .offset(10.dp, -15.dp)
+            .offset(10.dp, (-30).dp)
             .zIndex(2f)
             .clip(CircleShape)
             ){
@@ -74,7 +80,7 @@ fun CategoryItem(item: Category){
         Card(
             elevation = 5.dp,
             modifier = Modifier
-                .padding(10.dp)
+                .padding(10.dp, 30.dp, 10.dp, 10.dp)
                 .size(70.dp, 50.dp),
             backgroundColor = MainWhite
 

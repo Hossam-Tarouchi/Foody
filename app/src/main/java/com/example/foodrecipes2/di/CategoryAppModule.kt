@@ -2,8 +2,10 @@ package com.example.foodrecipes2.di
 
 import com.example.foodrecipes2.data.remote.FoodRecipiesApi
 import com.example.foodrecipes2.data.repository.CategoryRepositoryImpl
+import com.example.foodrecipes2.data.repository.MealsRepositoryImpl
 import com.example.foodrecipes2.domain.repository.CategoryRepository
-import com.example.foodrecipes2.domain.use_case.GetCategoriesUC
+import com.example.foodrecipes2.domain.repository.MealsRepository
+import com.example.foodrecipes2.domain.use_case.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,11 +26,45 @@ object CategoryAppModule {
 
     @Provides
     @Singleton
+    fun provideGetMealsUseCase(repository: MealsRepository): GetRandomFoodRecipiesUC {
+        return GetRandomFoodRecipiesUC(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetRecipiesByCategoryUseCase(repository: MealsRepository): GetRecipiesByCategoryUC {
+        return GetRecipiesByCategoryUC(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetRecipiesByIdUseCase(repository: MealsRepository): GetRecipiesByIdUC {
+        return GetRecipiesByIdUC(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSearchRecipiesUseCase(repository: MealsRepository): SearchRecipiesUC {
+        return SearchRecipiesUC(repository)
+    }
+
+    @Provides
+    @Singleton
     fun provideCategoryRepository(
         //db: WordInfoDatabase,
         api: FoodRecipiesApi
     ): CategoryRepository {
         return CategoryRepositoryImpl(api)
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideMealRepository(
+        //db: WordInfoDatabase,
+        api: FoodRecipiesApi
+    ): MealsRepository {
+        return MealsRepositoryImpl(api)
     }
 
     @Provides

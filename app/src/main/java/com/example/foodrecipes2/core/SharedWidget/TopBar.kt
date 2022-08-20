@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Menu
@@ -15,6 +16,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
@@ -22,18 +24,34 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.foodrecipes2.R
+import com.example.foodrecipes2.presentation.screens.home_screen.HomeScreenViewModel
 import com.example.foodrecipes2.ui.theme.MainBlack
 import com.example.foodrecipes2.ui.theme.MainWhite
 
 @Composable
-fun CustomTopBar(){
+fun CustomTopBar(navController: NavController, showBackBtn: Boolean) {
+
+    val viewModel: HomeScreenViewModel = hiltViewModel()
+    val state = viewModel.state.value
     var showSearchBar by remember{
         mutableStateOf(false)
     }
     Row(modifier = Modifier
         .fillMaxWidth()
-        .padding(0.dp, 30.dp, 20.dp, 30.dp), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
+        .padding(10.dp, 30.dp, 20.dp, 10.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+        if (showBackBtn){
+            IconButton(modifier = Modifier.
+            then(Modifier.size(20.dp)),onClick = { navController.navigateUp() }) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "Back"
+                )
+            }
+        }
 
         AnimatedVisibility(showSearchBar){
             CustomTextField(
@@ -61,10 +79,19 @@ fun CustomTopBar(){
 
 
         Box() {
+
             Row() {
+
+
                 IconButton(modifier = Modifier.
                 then(Modifier.size(20.dp)),
-                    onClick = { showSearchBar = !showSearchBar }) {
+                    onClick = {
+                        if (showSearchBar == true){
+                            viewModel.onSearch("")
+                        }
+                            showSearchBar = !showSearchBar
+                    }) {
+
                     Icon(
                         painterResource(id = if(showSearchBar) R.drawable.ic_cancel else R.drawable.ic_search),
                         "contentDescription",
@@ -99,17 +126,17 @@ private fun CustomTextField(
     placeholderText: String = "Placeholder",
     fontSize: TextUnit = MaterialTheme.typography.body2.fontSize
 ) {
-    var text by rememberSaveable { mutableStateOf("") }
-    BasicTextField(modifier = modifier
-        .background(
-            MaterialTheme.colors.surface,
-            MaterialTheme.shapes.small,
-        )
-        .fillMaxWidth(0.6f),
-        value = text,
-        onValueChange = {
-            text = it
-        },
+    val viewModel: HomeScreenViewModel = hiltViewModel()
+    val state = viewModel.state.value
+    BasicTextField(
+        modifier = modifier
+            .background(
+                MaterialTheme.colors.surface,
+                MaterialTheme.shapes.small,
+            )
+            .fillMaxWidth(0.6f),
+        value = state.searchQuery,
+        onValueChange = viewModel::onSearch,
         singleLine = true,
         cursorBrush = SolidColor(MaterialTheme.colors.primary),
         textStyle = LocalTextStyle.current.copy(
@@ -123,7 +150,7 @@ private fun CustomTextField(
             ) {
                 if (leadingIcon != null) leadingIcon()
                 Box(Modifier.weight(1f)) {
-                    if (text.isEmpty()) Text(
+                    if (state.searchQuery.isEmpty()) Text(
                         placeholderText,
                         style = LocalTextStyle.current.copy(
                             color = MaterialTheme.colors.onSurface.copy(alpha = 0.3f),

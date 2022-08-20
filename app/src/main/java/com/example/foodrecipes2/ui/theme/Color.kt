@@ -9,3 +9,4 @@ val Teal200 = Color(0xFF03DAC5)
 
 val MainBlack = Color(0xFF10100B)
 val MainWhite = Color(0xFFF5F5F4)
+val BottomMenuSelectedItemBg = Color(0x43F5F5F4)
