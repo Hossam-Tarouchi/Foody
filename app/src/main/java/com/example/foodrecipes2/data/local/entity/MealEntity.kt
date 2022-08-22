@@ -1,15 +1,18 @@
-package com.example.foodrecipes2.domain.model
+package com.example.foodrecipes2.data.local.entity
 
-import com.example.foodrecipes2.data.local.entity.MealEntity
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.example.foodrecipes2.domain.model.Meal
 
-data class Meal(
-    val dateModified: Any?,
+@Entity
+data class MealEntity(
+    val dateModified: String?,
     val idMeal: String?,
     val strArea: String?,
     val strCategory: String?,
-    val strCreativeCommonsConfirmed: Any?,
-    val strDrinkAlternate: Any?,
-    val strImageSource: Any?,
+    val strCreativeCommonsConfirmed: String?,
+    val strDrinkAlternate: String?,
+    val strImageSource: String?,
     val strIngredient1: String?,
     val strIngredient10: String?,
     val strIngredient11: String?,
@@ -55,11 +58,12 @@ data class Meal(
     val strMeasure9: String?,
     val strSource: String?,
     val strTags: String?,
-    val strYoutube: String?
+    val strYoutube: String?,
+    @PrimaryKey val id: Int? = null
 ){
-    fun toMealEntity(): MealEntity{
-        return MealEntity(
-            dateModified.toString(), idMeal, strArea, strCategory, strCreativeCommonsConfirmed.toString(), strDrinkAlternate.toString(), strImageSource.toString(), strIngredient1, strIngredient10, strIngredient11, strIngredient12, strIngredient13, strIngredient14, strIngredient15, strIngredient16, strIngredient17, strIngredient18, strIngredient19, strIngredient2, strIngredient20, strIngredient3, strIngredient4, strIngredient5, strIngredient6, strIngredient7, strIngredient8, strIngredient9, strInstructions, strMeal, strMealThumb, strMeasure1, strMeasure10, strMeasure11, strMeasure12, strMeasure13, strMeasure14, strMeasure15, strMeasure16, strMeasure17, strMeasure18, strMeasure19, strMeasure2, strMeasure20, strMeasure3, strMeasure4, strMeasure5, strMeasure6, strMeasure7, strMeasure8, strMeasure9, strSource, strTags, strYoutube
+    fun toMeal(): Meal{
+        return Meal(
+            dateModified, idMeal, strArea, strCategory, strCreativeCommonsConfirmed, strDrinkAlternate, strImageSource, strIngredient1, strIngredient10, strIngredient11, strIngredient12, strIngredient13, strIngredient14, strIngredient15, strIngredient16, strIngredient17, strIngredient18, strIngredient19, strIngredient2, strIngredient20, strIngredient3, strIngredient4, strIngredient5, strIngredient6, strIngredient7, strIngredient8, strIngredient9, strInstructions, strMeal, strMealThumb, strMeasure1, strMeasure10, strMeasure11, strMeasure12, strMeasure13, strMeasure14, strMeasure15, strMeasure16, strMeasure17, strMeasure18, strMeasure19, strMeasure2, strMeasure20, strMeasure3, strMeasure4, strMeasure5, strMeasure6, strMeasure7, strMeasure8, strMeasure9, strSource, strTags, strYoutube
         )
     }
 }

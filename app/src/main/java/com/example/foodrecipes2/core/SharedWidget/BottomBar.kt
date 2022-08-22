@@ -12,13 +12,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.foodrecipes2.R
+import com.example.foodrecipes2.core.util.Screen
 import com.example.foodrecipes2.ui.theme.BottomMenuSelectedItemBg
 import com.example.foodrecipes2.ui.theme.MainBlack
 import com.example.foodrecipes2.ui.theme.MainWhite
 
 @Composable
-fun CustomBottomBar(){
+fun CustomBottomBar(navController: NavController) {
 
     var selectedMenu by remember {
         mutableStateOf("home")
@@ -38,6 +40,7 @@ fun CustomBottomBar(){
             listOf<BottomMenuItem>(BottomMenuItem.Home, BottomMenuItem.Chef, BottomMenuItem.Settings, BottomMenuItem.Profile).forEach {
                 BottomNavItem(item = it, onClickFun = {
                                                       selectedMenu = it.title
+                    navController.navigate(Screen.LikedMealsScreen.route)
                 }, isSelected = selectedMenu.equals(it.title) )
             }
         }
@@ -65,7 +68,7 @@ fun BottomNavItem(item: BottomMenuItem, onClickFun : (BottomMenuItem)->Unit, isS
 
 sealed class BottomMenuItem(val title: String, val icon: Int){
     object Home: BottomMenuItem("home", R.drawable.ic_home)
-    object Chef: BottomMenuItem("chef", R.drawable.ic_chef)
+    object Chef: BottomMenuItem("chef", R.drawable.ic_liked)
     object Settings: BottomMenuItem("settings", R.drawable.ic_setting)
     object Profile: BottomMenuItem("profile", R.drawable.ic_person)
 }

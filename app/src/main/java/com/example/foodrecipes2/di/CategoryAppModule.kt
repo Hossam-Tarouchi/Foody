@@ -1,11 +1,15 @@
 package com.example.foodrecipes2.di
 
+import android.app.Application
+import androidx.room.Room
+import com.example.foodrecipes2.data.local.MealDatabase
 import com.example.foodrecipes2.data.remote.FoodRecipiesApi
 import com.example.foodrecipes2.data.repository.CategoryRepositoryImpl
 import com.example.foodrecipes2.data.repository.MealsRepositoryImpl
 import com.example.foodrecipes2.domain.repository.CategoryRepository
 import com.example.foodrecipes2.domain.repository.MealsRepository
 import com.example.foodrecipes2.domain.use_case.*
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,8 +24,35 @@ object CategoryAppModule {
 
     @Provides
     @Singleton
+    fun provideMealDatabase(app: Application): MealDatabase {
+        return Room.databaseBuilder(
+            app, MealDatabase::class.java, "meal_db"
+        )
+            .build()
+    }
+
+    @Provides
+    @Singleton
     fun provideGetCategoriesUseCase(repository: CategoryRepository): GetCategoriesUC {
         return GetCategoriesUC(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSwitchLikedRecipieUseCase(repository: MealsRepository): SwitchLikedRecipieUC {
+        return SwitchLikedRecipieUC(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetLikedMealsUseCase(repository: MealsRepository): GetLikedMealsUC {
+        return GetLikedMealsUC(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideIsMealLikedUseCase(repository: MealsRepository): IsMealLikedUC {
+        return IsMealLikedUC(repository)
     }
 
     @Provides
@@ -61,10 +92,10 @@ object CategoryAppModule {
     @Provides
     @Singleton
     fun provideMealRepository(
-        //db: WordInfoDatabase,
+        db: MealDatabase,
         api: FoodRecipiesApi
     ): MealsRepository {
-        return MealsRepositoryImpl(api)
+        return MealsRepositoryImpl(api, db.dao)
     }
 
     @Provides

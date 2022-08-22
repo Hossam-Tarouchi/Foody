@@ -10,6 +10,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -26,8 +27,8 @@ import com.example.foodrecipes2.R
 import com.example.foodrecipes2.core.SharedWidget.CustomBottomBar
 import com.example.foodrecipes2.core.SharedWidget.CustomTopBar
 import com.example.foodrecipes2.presentation.screens.detail_screen.widgets.TabItem
-import com.example.foodrecipes2.presentation.screens.list_recipies_screen.RecipiesByCategoryViewModel
 import com.example.foodrecipes2.ui.theme.MainBlack
+import com.example.foodrecipes2.ui.theme.MainWhite
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
 import java.lang.Double
@@ -42,13 +43,17 @@ fun DetailScreen(recipieId :String?, navController: NavController){
     val state = viewModel.state.value
 
     LaunchedEffect(key1 = true) {
-        recipieId?.let { viewModel.getRecipiesById(it) }
+        recipieId?.let { viewModel.handle(DetailViewAction.GetRecipiesById(it)) }
+        recipieId?.let { viewModel.handle(DetailViewAction.IsMealLiked(it)) }
     }
 
-    Scaffold(topBar = { CustomTopBar(navController = navController, showBackBtn = true) }, bottomBar = { CustomBottomBar() }) {
+    Scaffold(topBar = { CustomTopBar(navController = navController, showBackBtn = true) }, bottomBar = { CustomBottomBar(
+        navController
+    )
+    }, backgroundColor = MainWhite,) {
         Column(modifier = Modifier
             .fillMaxSize()
-            .offset(0.dp, -60.dp)         ) {
+            .offset(0.dp, -60.dp), horizontalAlignment = Alignment.End         ) {
             if (state.recipiesItems.size > 0){
                 Box {
                     SubcomposeAsyncImage(
@@ -64,7 +69,14 @@ fun DetailScreen(recipieId :String?, navController: NavController){
                     )
                 }
 
-                Column(modifier = Modifier.padding(20.dp, 10.dp)) {
+                Box(modifier = Modifier.offset(-20.dp, -35.dp).shadow(5.dp, CircleShape, false).clip(CircleShape).background(MainWhite).size(50.dp).clickable {
+                    viewModel.handle(DetailViewAction.SwitchLikedRecipie(!state.isLiked, state.recipiesItems[0]))
+                }) {
+                    Image(painter = painterResource(id = if (state.isLiked )R.drawable.ic_liked else R.drawable.ic_not_liked), contentDescription = "review star", modifier = Modifier.size(30.dp).align(Alignment.Center))
+                }
+
+
+                Column(modifier = Modifier.padding(20.dp, 0.dp, 20.dp, 10.dp).offset(0.dp, -25.dp)) {
                     state.recipiesItems[0].strMeal?.let { Text(text = it, modifier = Modifier
                         .padding(0.dp, 10.dp)
                         .fillMaxWidth(),

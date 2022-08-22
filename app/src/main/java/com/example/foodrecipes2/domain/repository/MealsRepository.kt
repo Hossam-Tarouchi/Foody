@@ -15,4 +15,10 @@ interface MealsRepository {
 
     fun searchFoodRecipie(query: String): Flow<Resource<List<Meal>>>
 
+    fun getLikedMeals(): Flow<Resource<List<Meal>>>
+
+    fun switchLikedRecipie(state: Boolean, meal: Meal): Flow<Resource<Boolean>>
+
+    fun isMealLiked(idMeal: String): Flow<Resource<Meal>>
+
 }

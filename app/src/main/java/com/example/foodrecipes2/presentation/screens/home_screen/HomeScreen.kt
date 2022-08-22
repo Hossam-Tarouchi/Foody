@@ -29,7 +29,7 @@ fun HomeScreen(navController: NavController){
         modifier = Modifier.fillMaxSize(),
         backgroundColor = MainWhite,
         topBar = {CustomTopBar(navController, false)},
-        bottomBar = {CustomBottomBar()}
+        bottomBar = {CustomBottomBar(navController)}
     ) {
         Column(modifier = Modifier.padding(it)
             .verticalScroll(rememberScrollState())

@@ -9,12 +9,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.foodrecipes2.presentation.screens.detail_screen.DetailScreen
 import com.example.foodrecipes2.presentation.screens.home_screen.HomeScreen
+import com.example.foodrecipes2.presentation.screens.liked_meals_screen.LikedMealsScreen
 import com.example.foodrecipes2.presentation.screens.list_recipies_screen.ListOfRecipiesScreen
 
 @Composable
 fun Navigation(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Screen.MainScreen.route ){
-        composable("mainScreen") { HomeScreen(navController) }
+        composable(Screen.MainScreen.route) { HomeScreen(navController) }
+        composable(Screen.LikedMealsScreen.route) { LikedMealsScreen(navController) }
         composable(route = "listOfRecipies/{category}", arguments = listOf(
             navArgument("category"){
                 type = NavType.StringType

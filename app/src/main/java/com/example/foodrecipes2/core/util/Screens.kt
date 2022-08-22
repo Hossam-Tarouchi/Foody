@@ -8,6 +8,7 @@ sealed class Screen(
     object MainScreen: Screen("mainScreen")
     object ListOfRecipies: Screen("listOfRecipies")
     object DetailScreen: Screen("detailScreen")
+    object LikedMealsScreen: Screen("likedMealsScreen")
 
     fun withArgs(vararg args: String): String{
         return buildString {
